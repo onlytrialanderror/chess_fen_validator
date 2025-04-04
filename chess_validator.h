@@ -721,15 +721,14 @@ INVALID_REASON  is_move_invalid( TableState* ptr_table_state , int source_index 
 
         if( !any_castling && ( abs(delta_x)>1 || abs(delta_y)>1 ) ) 
             return INVALID_UNIT_MOVE;
-
         if( any_castling ) {
+            // king in check before castling ?
+            if( is_king_in_check(ptr_table_state,ptr_table_state->next_color_to_play) ) return INVALID_UNIT_MOVE;
             // king in check during castling ?
-            int half_target_index = target_index > source_index ? source_index + 1 : source_index - 1;
-            int opponent_king_color = ptr_table_state->next_color_to_play;
-            TableState castling_inbetween_state = apply_move( ptr_table_state , source_index , half_target_index , TYPE_QUEEN );
-            bool king_in_check_at_castling = is_king_in_check(&castling_inbetween_state,opponent_king_color);
-            if( king_in_check_at_castling ) return KING_IN_CHECK;
-        }
+            int half_target_index = target_index > source_index ? source_index + 1 : source_index - 1;            
+            TableState castling_inbetween_state = apply_move( ptr_table_state , source_index , half_target_index , TYPE_QUEEN );                        
+            if( is_king_in_check(&castling_inbetween_state,ptr_table_state->next_color_to_play) ) return INVALID_UNIT_MOVE;
+        }  
     } 
 
     int current_player_color = ptr_table_state->next_color_to_play;
