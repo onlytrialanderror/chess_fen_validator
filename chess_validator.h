@@ -662,16 +662,15 @@ INVALID_REASON  is_move_invalid( TableState* ptr_table_state , int source_index 
         if( capturing ){
             if( abs(delta_index)!=9 && abs(delta_index)!=7 )
                 return INVALID_UNIT_MOVE;
-        } else {
-            if( abs(delta_x) > 0 ) return INVALID_UNIT_MOVE;
-            if( first_move ){
-                if( abs(delta_y) > 2 ) return INVALID_UNIT_MOVE;
-                if( abs(delta_y) == 2 ){
-                    if( table_state.map[source_index+delta_index/2] ) 
-                        return INVALID_UNIT_MOVE; // Can't jump over units
-                }
+            } else {
+                if( abs(delta_x) > 0 || abs(delta_y) > 2 ) return INVALID_UNIT_MOVE;
+                if( first_move ){                
+                    if( abs(delta_y) == 2 ){
+                        if( table_state.map[source_index+delta_index/2] ) 
+                            return INVALID_UNIT_MOVE; // Can't jump over units
+                    }
+                } else if( abs(delta_y) > 1 ) return INVALID_UNIT_MOVE;
             }
-        }
     } 
     else if ( source_square & SQUARE::TYPE_KNIGHT ){
         if( abs(delta_x) + abs(delta_y) != 3 ) return INVALID_UNIT_MOVE;
